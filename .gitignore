@@ -1,3 +1,6 @@
+# Java build artifacts
+backend/target/
+
 # Logs
 logs
 *.log
