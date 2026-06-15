@@ -4,7 +4,7 @@ import {
   Package, Cpu, Truck, ShoppingCart,
   Wallet, Receipt, BarChart3,
   UserCog, Settings, HelpCircle, LogOut,
-  Wrench, PanelLeftClose, PanelLeftOpen,
+  Wrench, PanelLeftClose, PanelLeftOpen, Gauge,
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
@@ -24,6 +24,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: 'PRINCIPAL',
     items: [
+      { label: 'Pátio',             path: '/patio',           icon: <Gauge size={14} /> },
       { label: 'Dashboard',         path: '/dashboard',       icon: <LayoutDashboard size={14} /> },
       { label: 'Ordens de Serviço', path: '/ordens-servico',  icon: <ClipboardList size={14} />, badge: 8 },
       { label: 'Agenda',            path: '/agenda',          icon: <Calendar size={14} /> },

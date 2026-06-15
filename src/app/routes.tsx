@@ -16,13 +16,15 @@ import { FinancePage } from '../features/finance/FinancePage'
 import { BillingPage } from '../features/billing/BillingPage'
 import { ReportsPage } from '../features/reports/ReportsPage'
 import { PlaceholderPage } from '../components/ui/PlaceholderPage'
+import { PatioPage } from '../features/patio/PatioPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppShell />,
     children: [
-      { index: true, element: <Navigate to="/dashboard" replace /> },
+      { index: true, element: <Navigate to="/patio" replace /> },
+      { path: 'patio', element: <PatioPage /> },
       { path: 'dashboard',          element: <DashboardPage /> },
       { path: 'ordens-servico',     element: <ServiceOrdersPage /> },
       { path: 'ordens-servico/:id', element: <ServiceOrderDetailPage /> },
