@@ -1,29 +1,27 @@
 package com.garagepro.api.entity;
 
-import com.garagepro.api.entity.enums.SupplierStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "suppliers")
+@Table(name = "customers")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class Supplier {
 
+public class Customer {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "corporate_name", nullable = false, length = 200)
-    private String corporateName;
-
-    @Column(name = "trade_name", length = 200)
-    private String tradeName;
+    @Column(name = "name", nullable = false, length = 200)
+    private String name;
 
     @Column(nullable = false, unique = true, length = 20)
     private String document;
@@ -34,17 +32,22 @@ public class Supplier {
     @Column(length = 30)
     private String phone;
 
-    @Column(name = "delivery_days")
-    private Integer deliveryDays;
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 100)
+    private String city;
+
+    @Column(length = 2)
+    private String state;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean active = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    @Builder.Default
-    private SupplierStatus status = SupplierStatus.ATIVO;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -54,7 +57,7 @@ public class Supplier {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "supplier", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<Part> parts = new ArrayList<>();
+    private List<Vehicle> vehicles = new ArrayList<>();
 }

@@ -1,0 +1,34 @@
+CREATE TABLE customers(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    document VARCHAR(255) NOT NULL,
+    phone VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    state VARCHAR(2) NOT NULL,
+    company_id BIGINT NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_customers_company FOREIGN KEY (company_id) REFERENCES companies(id)
+
+);
+
+CREATE TABLE vehicles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    plate VARCHAR(255) NOT NULL,
+    brand VARCHAR(255) NOT NULL,
+    model VARCHAR(255) NOT NULL,
+    year  INT(30) NOT NULL,
+    color VARCHAR(255) NOT NULL,
+    mileage INT(11) NOT NULL,
+    customer_id BIGINT NOT NULL,
+    company_id BIGINT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_customers FOREIGN KEY (customer_id) REFERENCES customers(id),
+    CONSTRAINT fk_vehicles_company FOREIGN KEY (company_id) REFERENCES companies(id)
+);

@@ -1,0 +1,14 @@
+CREATE TABLE services(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(500),
+    price DECIMAL(10,2) NOT NULL,
+    estimated_minutes INT(255) ,
+    company_id BIGINT NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_services_company FOREIGN KEY (company_id) REFERENCES companies(id)
+
+);
