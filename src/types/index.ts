@@ -377,6 +377,23 @@ export interface ImportHistory {
   status: ImportStatus
 }
 
+// ─── System Users ─────────────────────────────────────────────────────────────
+
+export type SystemUserRole   = 'ADMINISTRADOR' | 'GERENTE' | 'MECANICO' | 'RECEPCIONISTA'
+export type SystemUserStatus = 'ATIVO' | 'INATIVO'
+
+export interface SystemUser {
+  id: string
+  name: string
+  initials: string
+  role: SystemUserRole
+  status: SystemUserStatus
+  email: string
+  phone: string
+  specialty?: string
+  joinDate: string
+}
+
 export type FiscalStatus = 'NAO_EMITIDO' | 'PENDENTE' | 'AUTORIZADO' | 'REJEITADO'
 
 export interface Invoice {
