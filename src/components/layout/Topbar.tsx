@@ -1,23 +1,30 @@
-import { Bell, Plus, Search, Settings, ChevronRight, Sun, Moon } from 'lucide-react'
+import { Bell, Plus, Search, Settings, ChevronRight, Sun, Moon, Menu } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '../../lib/utils'
 
 const BREADCRUMB_MAP: Record<string, string> = {
-  '': 'Dashboard', 'dashboard': 'Dashboard',
-  'ordens-servico': 'Ordens de Serviço', 'clientes': 'Clientes',
-  'veiculos': 'Veículos', 'agenda': 'Agenda', 'estoque': 'Estoque',
-  'pecas': 'Peças', 'fornecedores': 'Fornecedores', 'compras': 'Compras',
-  'financeiro': 'Financeiro', 'usuarios': 'Usuários', 'configuracoes': 'Configurações',
+  '': 'Início', 'inicio': 'Início', 'dashboard': 'Dashboard',
+  'patio': 'Pátio', 'agenda': 'Agenda',
+  'servicos': 'Serviços', 'ordens-servico': 'Ordens de Serviço',
+  'cadastros': 'Cadastros', 'clientes': 'Clientes', 'veiculos': 'Veículos',
+  'estoque': 'Estoque', 'pecas': 'Peças', 'fornecedores': 'Fornecedores',
+  'compras': 'Compras', 'importar': 'Importar',
+  'financeiro': 'Financeiro', 'faturamento': 'Faturamento', 'detalhe': 'Detalhe',
+  'relatorios': 'Relatórios',
+  'equipe': 'Equipe', 'usuarios': 'Usuários',
+  'configuracoes': 'Configurações',
+  'ajuda': 'Ajuda',
 }
 
 function useBreadcrumbs() {
   const location = useLocation()
   const parts = location.pathname.split('/').filter(Boolean)
-  if (parts.length === 0) return [{ label: 'Dashboard', path: '/dashboard' }]
+  if (parts.length === 0) return [{ label: 'Início', path: '/inicio' }]
   return parts.map((part, i) => {
-    const path = '/' + parts.slice(0, i + 1).join('/')
-    const isId = /^(os\d|[0-9a-f]{8})/.test(part)
-    return { label: isId ? `OS #${part}` : (BREADCRUMB_MAP[part] ?? part), path }
+    const path  = '/' + parts.slice(0, i + 1).join('/')
+    const isId  = /^(os\d|[0-9a-f]{8})/.test(part)
+    const label = isId ? `#${part.toUpperCase()}` : (BREADCRUMB_MAP[part] ?? part)
+    return { label, path }
   })
 }
 
@@ -25,86 +32,126 @@ interface TopbarProps {
   sidebarWidth?: number
   theme?: 'light' | 'dark'
   onThemeToggle?: () => void
+  onMenuOpen?: () => void
 }
 
-export function Topbar({ sidebarWidth = 220, theme = 'light', onThemeToggle }: TopbarProps) {
+export function Topbar({ sidebarWidth = 220, theme = 'light', onThemeToggle, onMenuOpen }: TopbarProps) {
   const breadcrumbs = useBreadcrumbs()
-  const isDark = theme === 'dark'
+  const isDark      = theme === 'dark'
+  const pageTitle   = breadcrumbs[breadcrumbs.length - 1]?.label ?? 'GaragePro'
 
   return (
     <header
-      className="fixed top-0 right-0 z-10 flex items-center justify-between h-[44px] px-4 bg-t-topbar border-b border-t-border"
+      className={cn(
+        'fixed top-0 right-0 z-30 flex items-center justify-between h-[44px] px-3 md:px-4',
+        'bg-[var(--topbar)] border-b border-[var(--border)]',
+        'transition-all duration-[220ms]',
+      )}
       style={{ left: sidebarWidth }}
     >
-      {/* ── Left ──────────────────────────────────────── */}
-      <div className="flex items-center gap-3 min-w-0">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-1 text-[11px] leading-none">
-          {breadcrumbs.map((crumb, i) => (
-            <span key={crumb.path} className="flex items-center gap-1">
-              {i > 0 && <ChevronRight size={10} className="text-t-muted flex-shrink-0" />}
-              {i === breadcrumbs.length - 1 ? (
-                <span className="font-semibold text-t-text">{crumb.label}</span>
-              ) : (
-                <Link to={crumb.path} className="text-t-muted hover:text-t-secondary transition-colors">
-                  {crumb.label}
-                </Link>
-              )}
-            </span>
-          ))}
+      {/* ── Left ──────────────────────────────────────────────── */}
+      <div className="flex items-center gap-2 min-w-0 flex-1">
+
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={onMenuOpen}
+          className="md:hidden w-8 h-8 rounded flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-black/[0.04] transition-colors flex-shrink-0"
+          aria-label="Abrir menu"
+        >
+          <Menu size={17} />
+        </button>
+
+        {/* Breadcrumb — hidden on mobile, show page title instead */}
+        <nav className="flex items-center gap-1 text-[12px] leading-none min-w-0" aria-label="Breadcrumb">
+          {breadcrumbs.length > 1 ? (
+            <>
+              {/* Mobile: only page title */}
+              <span className="md:hidden font-semibold text-[var(--text-primary)] truncate">{pageTitle}</span>
+              {/* Desktop: full breadcrumb */}
+              <span className="hidden md:flex items-center gap-1">
+                {breadcrumbs.map((crumb, i) => (
+                  <span key={crumb.path} className="flex items-center gap-1">
+                    {i > 0 && <ChevronRight size={10} className="text-[var(--text-disabled)] flex-shrink-0" />}
+                    {i === breadcrumbs.length - 1 ? (
+                      <span className="font-semibold text-[var(--text-primary)]">{crumb.label}</span>
+                    ) : (
+                      <Link to={crumb.path} className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors">
+                        {crumb.label}
+                      </Link>
+                    )}
+                  </span>
+                ))}
+              </span>
+            </>
+          ) : (
+            <span className="font-semibold text-[var(--text-primary)]">{pageTitle}</span>
+          )}
         </nav>
 
-        {/* Search */}
-        <div className="relative hidden md:flex items-center ml-1">
-          <Search size={12} className="absolute left-2.5 text-t-muted pointer-events-none" />
+        {/* Global search — hidden on mobile */}
+        <div className="relative hidden md:flex items-center group ml-1">
+          <Search size={13} className="absolute left-2.5 text-[var(--text-muted)] pointer-events-none group-focus-within:text-[var(--brand)] transition-colors duration-[150ms]" />
           <input
             type="text"
             placeholder="Buscar placa, cliente ou OS..."
             className={cn(
-              'h-[28px] w-52 lg:w-64 rounded-md border border-t-border bg-t-surface',
-              'text-[11px] text-t-text placeholder:text-t-muted',
-              'focus:outline-none focus:ring-1 focus:ring-accent/40 focus:border-accent/40',
-              'pl-7 pr-8 transition-all duration-200',
+              'h-7 w-52 lg:w-64 rounded border border-[var(--border)] bg-[var(--surface-muted)]',
+              'text-[12px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]',
+              'focus:outline-none focus:ring-2 focus:ring-[var(--brand)]/20 focus:border-[var(--brand)]/50',
+              'focus:bg-[var(--surface)] focus:w-72',
+              'pl-7 pr-3 transition-all duration-[200ms]',
             )}
+            aria-label="Busca global"
           />
-          <kbd className="absolute right-2 text-[9px] text-t-muted bg-t-surface border border-t-border rounded px-1 py-0.5 leading-none hidden lg:block">
-            ⌘K
-          </kbd>
         </div>
       </div>
 
-      {/* ── Right ─────────────────────────────────────── */}
-      <div className="flex items-center gap-0.5 flex-shrink-0">
-        <TopbarBtn aria-label="Notificações">
+      {/* ── Right ──────────────────────────────────────────────── */}
+      <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
+
+        {/* Notifications */}
+        <TopbarBtn aria-label="Notificações" title="Notificações">
           <Bell size={14} />
-          <span className="absolute top-1.5 right-1.5 w-1 h-1 rounded-full bg-accent" />
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--brand)' }} />
         </TopbarBtn>
 
         {/* Theme toggle */}
-        <TopbarBtn onClick={onThemeToggle} aria-label="Alternar tema">
+        <TopbarBtn onClick={onThemeToggle} aria-label="Alternar tema" title={isDark ? 'Modo claro' : 'Modo escuro'}>
           {isDark ? <Sun size={14} /> : <Moon size={14} />}
         </TopbarBtn>
 
-        <TopbarBtn aria-label="Configurações">
+        {/* Settings — hidden on mobile */}
+        <TopbarBtn aria-label="Configurações" title="Configurações" className="hidden md:flex">
           <Settings size={14} />
         </TopbarBtn>
 
-        <div className="w-px h-3.5 bg-t-border mx-1.5" />
+        <div className="w-px h-4 bg-[var(--border)] mx-1" />
 
-        {/* Avatar */}
-        <button className="flex items-center gap-1.5 h-7 pl-1 pr-2 rounded-md hover:bg-black/[0.04] dark:hover:bg-white/[0.05] transition-colors">
-          <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center">
-            <span className="text-[9px] font-bold text-accent leading-none">A</span>
+        {/* User avatar */}
+        <button
+          className="flex items-center gap-1.5 h-7 pl-1 pr-2 rounded transition-colors duration-[140ms] hover:bg-black/[0.04] dark:hover:bg-white/[0.05]"
+          aria-label="Perfil"
+        >
+          <div
+            className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+            style={{ backgroundColor: 'var(--brand-muted)', color: 'var(--brand)' }}
+          >
+            A
           </div>
-          <span className="text-[11px] font-medium text-t-secondary hidden lg:block">Admin</span>
+          <span className="text-[12px] font-medium text-[var(--text-secondary)] hidden lg:block">Admin</span>
         </button>
 
-        <div className="w-px h-3.5 bg-t-border mx-1.5" />
+        <div className="w-px h-4 bg-[var(--border)] mx-1 hidden md:block" />
 
-        {/* Nova OS */}
-        <Link to="/ordens-servico">
-          <button className="flex items-center gap-1.5 h-7 px-3 rounded-md bg-gray-900 hover:bg-black dark:bg-t-text dark:hover:bg-white dark:text-gray-900 text-white text-[11px] font-semibold transition-colors shadow-sm">
-            <Plus size={12} strokeWidth={2.5} />
+        {/* Nova OS — hidden on mobile */}
+        <Link to="/servicos" className="hidden md:block">
+          <button
+            className="flex items-center gap-1.5 h-7 px-3 rounded font-semibold text-[12px] text-white transition-all duration-[140ms] shadow-xs"
+            style={{ backgroundColor: 'var(--brand)' }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--brand-dark)')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--brand)')}
+          >
+            <Plus size={13} strokeWidth={2.5} />
             Nova OS
           </button>
         </Link>
@@ -113,13 +160,17 @@ export function Topbar({ sidebarWidth = 220, theme = 'light', onThemeToggle }: T
   )
 }
 
-function TopbarBtn({
-  children,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function TopbarBtn({ children, className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className="relative w-7 h-7 rounded-md flex items-center justify-center text-t-muted hover:text-t-secondary hover:bg-black/[0.04] dark:hover:bg-white/[0.05] transition-colors"
+      className={cn(
+        'relative w-7 h-7 rounded flex items-center justify-center',
+        'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
+        'hover:bg-black/[0.04] dark:hover:bg-white/[0.05]',
+        'transition-colors duration-[140ms]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]/40',
+        className,
+      )}
       {...props}
     >
       {children}

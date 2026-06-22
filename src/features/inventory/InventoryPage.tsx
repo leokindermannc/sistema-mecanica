@@ -237,7 +237,7 @@ export function InventoryPage() {
       {/* ── Table ─────────────────────────────────────────────────────────── */}
       <div
         className="flex-1 overflow-y-auto px-5 py-4 bg-t-bg"
-        style={{ paddingRight: selectedId ? 340 : 20 }}
+        style={{ paddingRight: selectedId ? 620 : 20 }}
       >
         {/* Import banner */}
         <div className="flex items-center justify-between gap-3 rounded-lg border border-blue-500/20 bg-blue-500/5 px-3 py-2 mb-3">
