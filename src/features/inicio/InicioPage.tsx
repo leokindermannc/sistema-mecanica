@@ -321,28 +321,32 @@ export function InicioPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <div className="px-6 py-6 space-y-5 max-w-[1600px]">
+    <div className="flex flex-col h-[calc(100vh-44px)] overflow-hidden bg-[var(--background)]">
 
-        {/* ── Header ──────────────────────────────────────────────────── */}
-        <div className="flex items-start justify-between gap-4">
+      {/* Fixed header */}
+      <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-[var(--border)] bg-[var(--surface)]">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-[22px] font-extrabold text-[var(--text-primary)] leading-tight tracking-tight">
+            <h1 className="text-[18px] font-black text-[var(--text-primary)] leading-tight tracking-tight">
               {getGreeting()}, Admin
             </h1>
-            <p className="text-[13px] text-[var(--text-muted)] mt-0.5">{today}</p>
+            <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{today}</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Link to="/relatorios" className="h-8 px-3 rounded border border-[var(--border)] text-[12px] font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors flex items-center gap-1.5">
+            <Link to="/relatorios" className="h-8 px-3 rounded-lg border border-[var(--border)] text-[11px] font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors flex items-center gap-1.5">
               <BarChart3 size={13} /> Relatórios
             </Link>
-            <Link to="/servicos" className="h-8 px-3 rounded text-[12px] font-semibold text-white flex items-center gap-1.5 transition-colors" style={{ backgroundColor: 'var(--brand)' }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--brand-dark)')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--brand)')}>
-              <Plus size={13} strokeWidth={2.5} /> Nova OS
+            <Link to="/servicos"
+              className="flex items-center gap-1.5 h-8 px-4 rounded-lg text-white text-[11px] font-bold transition-all hover:shadow-md hover:-translate-y-px"
+              style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)', boxShadow: '0 2px 8px rgba(249,115,22,0.25)' }}>
+              <Plus size={12} strokeWidth={2.5} /> Nova OS
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* Scrollable content */}
+      <div className="flex-1 min-h-0 overflow-auto px-6 py-5 space-y-5">
 
         {/* ── Workflow banner ──────────────────────────────────────────── */}
         <WorkflowBanner
@@ -412,7 +416,7 @@ export function InicioPage() {
                       <div className="w-px h-8 bg-[var(--border)] flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] font-semibold text-[var(--text-primary)] truncate">{a.customerName}</p>
-                        <p className="text-[11px] text-[var(--text-muted)] truncate">{(a as any).vehicle ?? (a as any).vehicleName ?? '—'} · {(a as any).mechanicName ?? 'Sem mecânico'}</p>
+                        <p className="text-[11px] text-[var(--text-muted)] truncate">{a.vehicle ?? '—'} · {a.mechanicName ?? 'Sem mecânico'}</p>
                       </div>
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded flex-shrink-0"
                         style={{ color: a.status === 'CONFIRMADO' ? '#2563EB' : a.status === 'REALIZADO' ? 'var(--success)' : 'var(--text-muted)', backgroundColor: a.status === 'CONFIRMADO' ? 'rgba(37,99,235,0.10)' : a.status === 'REALIZADO' ? 'var(--success-subtle)' : 'var(--surface-muted)' }}>

@@ -174,16 +174,16 @@ function DonutChart({ slices, label }: {
 }) {
   const total = slices.reduce((s, sl) => s + sl.value, 0)
   const R = 50; const CX = 68; const CY = 68; const SW = 17
-  let cum = -90
-  const arcs = slices.map(sl => {
+  const arcs = slices.reduce<(typeof slices[number] & { a: number; d: string })[]>((acc, sl, _i) => {
+    const prevCum = acc.length > 0 ? acc.reduce((s, x) => s + x.a, -90) : -90
     const a = total > 0 ? (sl.value / total) * 360 : 0
-    const s = cum; cum += a
+    const s = prevCum
     const x1 = CX + R * Math.cos(s * Math.PI / 180)
     const y1 = CY + R * Math.sin(s * Math.PI / 180)
     const x2 = CX + R * Math.cos((s + a) * Math.PI / 180)
     const y2 = CY + R * Math.sin((s + a) * Math.PI / 180)
-    return { ...sl, a, d: `M ${x1} ${y1} A ${R} ${R} 0 ${a > 180 ? 1 : 0} 1 ${x2} ${y2}` }
-  })
+    return [...acc, { ...sl, a, d: `M ${x1} ${y1} A ${R} ${R} 0 ${a > 180 ? 1 : 0} 1 ${x2} ${y2}` }]
+  }, [])
   return (
     <div className="flex items-center gap-5">
       <svg viewBox="0 0 136 136" className="w-[110px] h-[110px] flex-shrink-0">

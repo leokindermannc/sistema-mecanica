@@ -1,30 +1,38 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   Home, Gauge, CalendarDays,
-  ClipboardList, BookUser,
-  Package, Wallet, BarChart3,
-  Users, Settings, HelpCircle, LogOut,
-  ChevronLeft, ChevronRight, Wrench, X,
+  Users, Car, FileText, ClipboardList,
+  Package, ShoppingCart, UsersRound, Shield,
+  Wallet, Landmark, BellDot,
+  BarChart3, FolderOpen, Settings,
+  HelpCircle, LogOut, ChevronLeft, ChevronRight, Wrench, X,
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 // ── Active-path mapping ───────────────────────────────────────────────────────
 
 const ACTIVE_PATHS: Record<string, string[]> = {
-  '/inicio':        ['/inicio', '/dashboard'],
-  '/patio':         ['/patio'],
-  '/agenda':        ['/agenda'],
-  '/servicos':      ['/servicos', '/ordens-servico'],
-  '/cadastros':     ['/cadastros', '/clientes', '/veiculos'],
-  '/estoque':       ['/estoque', '/pecas', '/compras', '/fornecedores'],
-  '/financeiro':    ['/financeiro', '/faturamento'],
-  '/relatorios':    ['/relatorios'],
-  '/equipe':        ['/equipe', '/usuarios'],
-  '/configuracoes': ['/configuracoes'],
-  '/ajuda':         ['/ajuda'],
+  '/inicio':       ['/inicio', '/dashboard'],
+  '/agenda':       ['/agenda'],
+  '/patio':        ['/patio'],
+  '/clientes':     ['/clientes', '/cadastros/clientes'],
+  '/veiculos':     ['/veiculos', '/cadastros'],
+  '/orcamentos':   ['/orcamentos'],
+  '/servicos':     ['/servicos', '/ordens-servico'],
+  '/estoque':      ['/estoque', '/pecas', '/estoque/pecas', '/estoque/importar'],
+  '/compras':      ['/compras', '/fornecedores'],
+  '/equipe':       ['/equipe', '/usuarios'],
+  '/garantias':    ['/garantias'],
+  '/financeiro':   ['/financeiro', '/faturamento', '/financeiro/detalhe'],
+  '/caixa':        ['/caixa'],
+  '/cobrancas':    ['/cobrancas'],
+  '/relatorios':   ['/relatorios'],
+  '/documentos':   ['/documentos'],
+  '/configuracoes':['/configuracoes'],
+  '/ajuda':        ['/ajuda'],
 }
 
-function useIsActive(itemPath: string, pathname: string): boolean {
+function isActive(itemPath: string, pathname: string): boolean {
   const associated = ACTIVE_PATHS[itemPath] ?? [itemPath]
   return associated.some((p) => {
     if (p === '/inicio' && (pathname === '/' || pathname === '/inicio')) return true
@@ -34,37 +42,49 @@ function useIsActive(itemPath: string, pathname: string): boolean {
 
 // ── Navigation structure ──────────────────────────────────────────────────────
 
-interface NavItem { label: string; path: string; icon: React.ReactNode; badge?: number }
+interface NavItem  { label: string; path: string; icon: React.ReactNode; badge?: number }
 interface NavGroup { label: string; items: NavItem[] }
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    label: 'Principal',
+    label: 'Visão Geral',
     items: [
       { label: 'Início',  path: '/inicio', icon: <Home size={15} /> },
+      { label: 'Agenda',  path: '/agenda', icon: <CalendarDays size={15} /> },
       { label: 'Pátio',  path: '/patio',  icon: <Gauge size={15} /> },
-      { label: 'Agenda', path: '/agenda', icon: <CalendarDays size={15} /> },
     ],
   },
   {
-    label: 'Oficina',
+    label: 'Atendimento',
     items: [
-      { label: 'Serviços',  path: '/servicos',  icon: <ClipboardList size={15} />, badge: 8 },
-      { label: 'Cadastros', path: '/cadastros', icon: <BookUser size={15} /> },
+      { label: 'Clientes',          path: '/clientes',   icon: <Users size={15} /> },
+      { label: 'Veículos',          path: '/veiculos',   icon: <Car size={15} /> },
+      { label: 'Orçamentos',        path: '/orcamentos', icon: <FileText size={15} />, badge: 2 },
+      { label: 'Ordens de Serviço', path: '/servicos',   icon: <ClipboardList size={15} />, badge: 8 },
+    ],
+  },
+  {
+    label: 'Operação',
+    items: [
+      { label: 'Estoque',   path: '/estoque',   icon: <Package size={15} /> },
+      { label: 'Compras',   path: '/compras',   icon: <ShoppingCart size={15} /> },
+      { label: 'Equipe',    path: '/equipe',    icon: <UsersRound size={15} /> },
+      { label: 'Garantias', path: '/garantias', icon: <Shield size={15} /> },
+    ],
+  },
+  {
+    label: 'Financeiro',
+    items: [
+      { label: 'Financeiro', path: '/financeiro', icon: <Wallet size={15} /> },
+      { label: 'Caixa',      path: '/caixa',      icon: <Landmark size={15} /> },
+      { label: 'Cobranças',  path: '/cobrancas',  icon: <BellDot size={15} /> },
     ],
   },
   {
     label: 'Gestão',
     items: [
-      { label: 'Estoque',    path: '/estoque',    icon: <Package size={15} /> },
-      { label: 'Financeiro', path: '/financeiro', icon: <Wallet size={15} /> },
-      { label: 'Relatórios', path: '/relatorios', icon: <BarChart3 size={15} /> },
-    ],
-  },
-  {
-    label: 'Sistema',
-    items: [
-      { label: 'Equipe',        path: '/equipe',        icon: <Users size={15} /> },
+      { label: 'Relatórios',   path: '/relatorios',   icon: <BarChart3 size={15} /> },
+      { label: 'Documentos',   path: '/documentos',   icon: <FolderOpen size={15} /> },
       { label: 'Configurações', path: '/configuracoes', icon: <Settings size={15} /> },
     ],
   },
@@ -81,8 +101,6 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMobileClose }: SidebarProps) {
   const { pathname } = useLocation()
-
-  // On mobile always render fully expanded
   const isExpanded = mobileOpen || !collapsed
 
   return (
@@ -91,13 +109,9 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
         'fixed left-0 top-0 bottom-0 z-50 flex flex-col select-none',
         'bg-[var(--sidebar)] border-r border-[var(--border)]',
         'transition-all duration-[220ms] ease-in-out',
-        // Desktop width
         collapsed ? 'md:w-[52px]' : 'md:w-[220px]',
-        // Mobile: always 260px wide, translates on open/close
         'w-[260px]',
-        mobileOpen
-          ? 'translate-x-0 shadow-2xl'
-          : '-translate-x-full md:translate-x-0 md:shadow-none',
+        mobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0 md:shadow-none',
       )}
     >
       {/* ── Logo ────────────────────────────────────────────── */}
@@ -120,7 +134,6 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
           </span>
         )}
 
-        {/* Mobile close button */}
         {mobileOpen && (
           <button
             onClick={onMobileClose}
@@ -131,7 +144,6 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
           </button>
         )}
 
-        {/* Desktop collapse toggle */}
         {!mobileOpen && (
           <>
             {!collapsed ? (
@@ -156,12 +168,9 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
       </div>
 
       {/* ── Navigation ──────────────────────────────────────── */}
-      <nav
-        className="flex-1 overflow-y-auto overflow-x-hidden py-2"
-        aria-label="Navegação principal"
-      >
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2" aria-label="Navegação principal">
         {NAV_GROUPS.map((group, gi) => (
-          <div key={group.label} className={gi > 0 ? 'mt-3' : ''}>
+          <div key={group.label} className={gi > 0 ? 'mt-2' : ''}>
             {isExpanded ? (
               <p className="px-4 mb-1 text-[9px] font-bold text-[var(--text-disabled)] tracking-[0.12em] uppercase">
                 {group.label}
@@ -172,7 +181,7 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
 
             <ul className={cn('space-y-[1px]', !isExpanded ? 'px-1.5' : 'px-2')}>
               {group.items.map((item) => {
-                const active = useIsActive(item.path, pathname)
+                const active = isActive(item.path, pathname)
                 return (
                   <li key={item.path}>
                     <NavLink
@@ -182,18 +191,12 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
                       className={cn(
                         'relative flex items-center rounded transition-all duration-[140ms]',
                         'text-[13px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]/40',
-                        !isExpanded
-                          ? 'justify-center h-8 w-8 mx-auto'
-                          : 'gap-2.5 h-[32px] px-2.5',
+                        !isExpanded ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 h-[30px] px-2.5',
                         active
                           ? 'font-semibold'
                           : 'font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/[0.035] dark:hover:bg-white/[0.04]',
                       )}
-                      style={active ? {
-                        color:           'var(--brand)',
-                        backgroundColor: 'var(--brand-muted)',
-                        borderRadius:    '10px',
-                      } : undefined}
+                      style={active ? { color: 'var(--brand)', backgroundColor: 'var(--brand-muted)', borderRadius: '10px' } : undefined}
                     >
                       {active && isExpanded && (
                         <span
@@ -201,15 +204,12 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
                           style={{ backgroundColor: 'var(--brand)' }}
                         />
                       )}
-
                       <span className={cn('flex-shrink-0 flex items-center', active ? 'opacity-100' : 'opacity-55')}>
                         {item.icon}
                       </span>
-
                       {isExpanded && (
                         <span className="flex-1 truncate leading-none">{item.label}</span>
                       )}
-
                       {isExpanded && item.badge != null && item.badge > 0 && (
                         <span
                           className="text-[9px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 leading-none"
@@ -221,7 +221,6 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
                           {item.badge}
                         </span>
                       )}
-
                       {!isExpanded && item.badge != null && item.badge > 0 && (
                         <span
                           className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
@@ -247,10 +246,8 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
               title={!isExpanded ? 'Ajuda' : undefined}
               className={({ isActive }) => cn(
                 'flex items-center rounded transition-colors duration-[140ms] font-medium text-[13px]',
-                !isExpanded ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 h-[32px] px-2.5',
-                isActive
-                  ? 'font-semibold'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/[0.035] dark:hover:bg-white/[0.04]',
+                !isExpanded ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 h-[30px] px-2.5',
+                isActive ? 'font-semibold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/[0.035] dark:hover:bg-white/[0.04]',
               )}
               style={({ isActive }) => isActive
                 ? { color: 'var(--brand)', backgroundColor: 'var(--brand-muted)', borderRadius: '10px' }
@@ -270,21 +267,18 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
             <button
               className={cn(
                 'w-full flex items-center rounded transition-colors duration-[140ms] font-medium text-[13px]',
-                !isExpanded ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 h-[32px] px-2.5',
+                !isExpanded ? 'justify-center h-8 w-8 mx-auto' : 'gap-2.5 h-[30px] px-2.5',
                 'text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-subtle)]',
               )}
               title={!isExpanded ? 'Sair' : undefined}
               aria-label="Sair"
             >
-              <span className="flex-shrink-0 flex items-center opacity-55">
-                <LogOut size={14} />
-              </span>
+              <span className="flex-shrink-0 flex items-center opacity-55"><LogOut size={14} /></span>
               {isExpanded && <span>Sair</span>}
             </button>
           </li>
         </ul>
 
-        {/* User chip */}
         {isExpanded && (
           <div className="flex items-center gap-2.5 mx-2 mt-2 pt-2 border-t border-[var(--border)] px-0.5">
             <div
@@ -295,7 +289,7 @@ export function Sidebar({ collapsed = false, onToggle, mobileOpen = false, onMob
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[11px] font-semibold text-[var(--text-primary)] leading-tight truncate">Admin</p>
-              <p className="text-[10px] text-[var(--text-muted)] leading-tight">Gerente</p>
+              <p className="text-[10px] text-[var(--text-muted)] leading-tight">Administrador</p>
             </div>
           </div>
         )}

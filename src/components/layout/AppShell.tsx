@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { ToastContainer } from '../ui/Toast'
 import { useTheme } from '../../hooks/useTheme'
 
 export const SIDEBAR_W           = 220
@@ -60,6 +61,8 @@ export function AppShell() {
       >
         <Outlet />
       </main>
+
+      <ToastContainer />
     </div>
   )
 }

@@ -7,16 +7,13 @@ import {
 import { MetricCard } from '../../components/garage/metric-card'
 import { OsCard } from '../../components/garage/os-card'
 import { StockAlertRow } from '../../components/garage/stock-alert'
-import { AgendaItem } from '../../components/garage/agenda-item'
-import { OsStatusBadge } from '../../components/garage/os-status-badge'
-import { PriorityBar } from '../../components/garage/priority-chip'
 import { VehiclePlate } from '../../components/garage/vehicle-plate'
 import { mockServiceOrders } from '../../mocks/service-orders'
 import { mockParts } from '../../mocks/inventory'
 import { mockSchedule } from '../../mocks/schedule'
 import {
-  TYPE_LABELS, TYPE_COLORS, PRIORITY_COLORS,
-  formatDate, formatCurrency, getStockStatus,
+  TYPE_LABELS, TYPE_COLORS,
+  formatCurrency, getStockStatus,
 } from '../../lib/utils'
 
 // ── Derived data ─────────────────────────────────────────────────────────────

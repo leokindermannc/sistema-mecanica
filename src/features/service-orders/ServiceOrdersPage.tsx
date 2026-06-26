@@ -534,7 +534,7 @@ function OsCard({
 // ─── Kanban View ──────────────────────────────────────────────────────────────
 
 function KanbanView({
-  orders, onSelectOs, onAdvanceStage,
+  orders, onSelectOs, onAdvanceStage: _onAdvanceStage,
 }: {
   orders: ServiceOrder[]
   onSelectOs: (id: string) => void
@@ -582,7 +582,7 @@ function KanbanView({
 
 // ─── OS Kanban Card (compact) ─────────────────────────────────────────────────
 
-function OsKanbanCard({ os, etapa, onClick }: { os: ServiceOrder; etapa: OsEtapa; onClick: () => void }) {
+function OsKanbanCard({ os, etapa: _etapa, onClick }: { os: ServiceOrder; etapa: OsEtapa; onClick: () => void }) {
   const badge = PRIORITY_BADGE[os.priority]
   return (
     <div

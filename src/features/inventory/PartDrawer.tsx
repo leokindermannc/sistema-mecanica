@@ -637,7 +637,7 @@ export function PartDrawer({ part, onClose }: { part: Part | null; onClose: () =
 
   const supplier = useMemo(
     () => (part?.supplierId ? mockSuppliers.find(s => s.id === part.supplierId) : null),
-    [part?.supplierId],
+    [part],
   )
 
   const allMovements = useMemo<LocalMovement[]>(() => {

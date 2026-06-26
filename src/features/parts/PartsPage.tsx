@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Upload, Search, X, Cpu, Zap } from 'lucide-react'
+import { Upload, Search, X, Cpu, Zap } from 'lucide-react'
 import { PageHeader } from '../../components/layout/PageHeader'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { PartDrawer, PART_STATUS_STYLE } from '../inventory/PartDrawer'

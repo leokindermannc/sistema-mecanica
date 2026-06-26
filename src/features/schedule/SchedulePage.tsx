@@ -974,8 +974,8 @@ export function SchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <div className="max-w-[1280px] mx-auto px-5 py-6 space-y-5">
+    <div className="flex flex-col h-[calc(100vh-44px)] overflow-hidden bg-[var(--background)]">
+      <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-[var(--border)] bg-[var(--surface)]">
 
         {/* ── Header ─────────────────────────────────────────────────── */}
         <div className="space-y-4">
@@ -1028,6 +1028,8 @@ export function SchedulePage() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="flex-1 min-h-0 overflow-auto px-5 py-5 space-y-5">
 
         {/* ── Summary cards ───────────────────────────────────────── */}
         <SummaryCards todayApts={appointments.filter(a => a.date === TODAY)} />

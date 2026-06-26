@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Plus, Search, TrendingUp, TrendingDown,
-  Wallet, FileText, ChevronRight, ArrowRight, AlertTriangle, CheckCircle2,
+  Plus, Search, ChevronRight, ArrowRight, AlertTriangle, CheckCircle2,
 } from 'lucide-react'
 import { mockFinance }  from '../../mocks/finance'
 import { mockInvoices } from '../../mocks/invoices'
@@ -29,25 +28,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'faturamento', label: 'Faturamento' },
 ]
 
-// ── KPI card ──────────────────────────────────────────────────────────────────
-
-function KpiCard({ label, value, icon, accent, onClick }: {
-  label: string; value: string; icon: React.ReactNode; accent: string; onClick?: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="relative text-left flex flex-col gap-2 p-3.5 rounded-lg border bg-[var(--surface)] border-[var(--border)] hover:border-[var(--border-strong)] transition-all duration-[160ms]"
-    >
-      <span className="absolute top-0 left-0 right-0 h-[2.5px] rounded-t-lg" style={{ backgroundColor: accent }} />
-      <div className="flex items-center justify-between mt-0.5">
-        <span className="text-[11px] font-medium text-[var(--text-muted)]">{label}</span>
-        <span className="p-1.5 rounded" style={{ backgroundColor: accent + '18', color: accent }}>{icon}</span>
-      </div>
-      <span className="text-[20px] font-extrabold text-[var(--text-primary)] leading-none tabular-nums">{value}</span>
-    </button>
-  )
-}
 
 // ── Finance row ───────────────────────────────────────────────────────────────
 
@@ -146,83 +126,70 @@ export function FinanceiroHubPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-5">
+    <div className="flex flex-col h-[calc(100vh-44px)] overflow-hidden bg-[var(--background)]">
 
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
+      {/* Fixed header */}
+      <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-[var(--border)] bg-[var(--surface)]">
+
+        {/* Title + CTA */}
+        <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <h1 className="text-[20px] font-extrabold text-[var(--text-primary)] tracking-tight">Financeiro</h1>
-            <p className="text-[13px] text-[var(--text-muted)] mt-0.5">
+            <h1 className="text-[18px] font-black text-[var(--text-primary)] tracking-tight">Financeiro</h1>
+            <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
               Acompanhe recebimentos, pagamentos, faturamento e caixa.
             </p>
           </div>
           <Link
             to="/financeiro"
-            className="flex-shrink-0 flex items-center gap-1.5 h-8 px-3 rounded text-[12px] font-semibold text-white transition-colors"
-            style={{ backgroundColor: 'var(--brand)' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--brand-dark)')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--brand)')}
+            className="flex items-center gap-1.5 h-8 px-4 rounded-lg text-white text-[11px] font-bold transition-all hover:shadow-md hover:-translate-y-px flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)', boxShadow: '0 2px 8px rgba(249,115,22,0.25)' }}
           >
-            <Plus size={13} strokeWidth={2.5} />
+            <Plus size={12} strokeWidth={2.5} />
             Novo lançamento
           </Link>
         </div>
 
-        {/* KPI row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <KpiCard
-            label="A receber"
-            value={formatCurrency(stats.aReceber)}
-            icon={<TrendingUp size={13} />}
-            accent="var(--success)"
-            onClick={() => setTab('receber')}
-          />
-          <KpiCard
-            label="A pagar"
-            value={formatCurrency(stats.aPagar)}
-            icon={<TrendingDown size={13} />}
-            accent="var(--danger)"
-            onClick={() => setTab('pagar')}
-          />
-          <KpiCard
-            label="Faturado no mês"
-            value={formatCurrency(stats.faturadoMes)}
-            icon={<Wallet size={13} />}
-            accent="var(--brand)"
-            onClick={() => setTab('faturamento')}
-          />
-          <KpiCard
-            label="Saldo previsto"
-            value={formatCurrency(stats.saldoPrevisto)}
-            icon={<FileText size={13} />}
-            accent={stats.saldoPrevisto >= 0 ? 'var(--success)' : 'var(--danger)'}
-            onClick={() => setTab('caixa')}
-          />
+        {/* KPI chips */}
+        <div className="flex items-center gap-3 mb-3">
+          {[
+            { label: 'A receber',    value: formatCurrency(stats.aReceber),      color: 'var(--success)',                                                        key: 'receber'     as Tab },
+            { label: 'A pagar',      value: formatCurrency(stats.aPagar),        color: 'var(--danger)',                                                         key: 'pagar'       as Tab },
+            { label: 'Faturado mês', value: formatCurrency(stats.faturadoMes),   color: 'var(--brand)',                                                          key: 'faturamento' as Tab },
+            { label: 'Saldo',        value: formatCurrency(stats.saldoPrevisto), color: stats.saldoPrevisto >= 0 ? 'var(--success)' : 'var(--danger)',           key: 'caixa'       as Tab },
+          ].map((k, i) => (
+            <button key={k.key} onClick={() => setTab(k.key)} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              {i > 0 && <span className="w-px h-3.5 bg-[var(--border)] flex-shrink-0" />}
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: k.color }} />
+                <span className="font-bold tabular-nums financial-value" style={{ color: k.color }}>{k.value}</span>
+                <span className="text-[var(--text-muted)]">{k.label}</span>
+              </div>
+            </button>
+          ))}
         </div>
 
-        {/* ── Callout vencidos ──────────────────────────────────── */}
+        {/* Alert vencidos */}
         {(() => {
           const vencidas = mockFinance.filter(f => f.status === 'VENCIDA' || (f.status === 'ABERTA' && new Date(f.dueDate) < new Date()))
           if (vencidas.length === 0) return null
           const totalVencido = vencidas.reduce((s, f) => s + f.value, 0)
           return (
-            <div className="flex items-center justify-between px-4 py-3 rounded-lg border"
-              style={{ backgroundColor: 'var(--danger-subtle)', borderColor: 'var(--danger-border)' }}>
-              <div className="flex items-center gap-2">
-                <AlertTriangle size={13} style={{ color: 'var(--danger)' }} />
-                <span className="text-[12px] font-semibold text-[var(--text-primary)]">
-                  {vencidas.length} {vencidas.length === 1 ? 'lançamento vencido' : 'lançamentos vencidos'} · {formatCurrency(totalVencido)} em aberto
-                </span>
-              </div>
-              <button onClick={() => setTab('receber')}
-                className="text-[11px] font-semibold px-2.5 py-1.5 rounded flex items-center gap-1 hover:opacity-80 transition-opacity"
-                style={{ color: 'var(--danger)', backgroundColor: 'rgba(0,0,0,0.06)' }}>
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg border text-[12px]"
+              style={{ background: 'var(--danger-subtle)', borderColor: 'var(--danger-border)' }}>
+              <AlertTriangle size={12} style={{ color: 'var(--danger)' }} className="flex-shrink-0" />
+              <span className="font-semibold flex-1" style={{ color: 'var(--danger)' }}>
+                {vencidas.length} {vencidas.length === 1 ? 'lançamento vencido' : 'lançamentos vencidos'} · {formatCurrency(totalVencido)} em aberto
+              </span>
+              <button onClick={() => setTab('receber')} className="text-[11px] font-bold hover:opacity-80 flex items-center gap-1" style={{ color: 'var(--danger)' }}>
                 Cobrar agora <ArrowRight size={10} />
               </button>
             </div>
           )
         })()}
+      </div>
+
+      {/* Scrollable content */}
+      <div className="flex-1 min-h-0 overflow-auto px-6 py-4">
 
         {/* Tab panel */}
         <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden">

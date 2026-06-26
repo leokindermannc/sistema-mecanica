@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { AppShell } from '../components/layout/AppShell'
 import { LoginPage }              from '../features/auth/LoginPage'
-// ── Hub pages (sidebar navigation targets) ───────────────────────────────────
+// ── Hub pages ────────────────────────────────────────────────────────────────
 import { InicioPage }             from '../features/inicio/InicioPage'
 import { ServicosPage }           from '../features/servicos/ServicosPage'
 import { CadastrosPage }          from '../features/cadastros/CadastrosPage'
@@ -9,7 +9,13 @@ import { EstoqueHubPage }         from '../features/estoque/EstoqueHubPage'
 import { FinanceiroHubPage }      from '../features/financeiro/FinanceiroHubPage'
 import { EquipePage }             from '../features/equipe/EquipePage'
 import { CustomerDetailPage }     from '../features/cadastros/CustomerDetailPage'
-// ── Existing feature pages (preserved — all direct URLs still work) ───────────
+// ── New ERP modules ──────────────────────────────────────────────────────────
+import { OrcamentosPage }         from '../features/orcamentos/OrcamentosPage'
+import { GarantiasPage }          from '../features/garantias/GarantiasPage'
+import { CaixaPage }              from '../features/caixa/CaixaPage'
+import { DocumentosPage }         from '../features/documentos/DocumentosPage'
+import { CobrancasPage }          from '../features/cobrancas/CobrancasPage'
+// ── Existing feature pages (preserved) ───────────────────────────────────────
 import { DashboardPage }          from '../features/dashboard/DashboardPage'
 import { ServiceOrdersPage }      from '../features/service-orders/ServiceOrdersPage'
 import { ServiceOrderDetailPage } from '../features/service-orders/ServiceOrderDetailPage'
@@ -24,7 +30,7 @@ import { SchedulePage }           from '../features/schedule/SchedulePage'
 import { FinancePage }            from '../features/finance/FinancePage'
 import { BillingPage }            from '../features/billing/BillingPage'
 import { ReportsPage }            from '../features/reports/ReportsPage'
-import { AjudaPage }             from '../features/ajuda/AjudaPage'
+import { AjudaPage }              from '../features/ajuda/AjudaPage'
 import { PatioPage }              from '../features/patio/PatioPage'
 import { UsersPage }              from '../features/users/UsersPage'
 import { SettingsPage }           from '../features/settings/SettingsPage'
@@ -56,6 +62,13 @@ export const router = createBrowserRouter([
           { path: 'estoque',    element: <EstoqueHubPage /> },
           { path: 'financeiro', element: <FinanceiroHubPage /> },
           { path: 'equipe',     element: <EquipePage /> },
+
+          // ── New ERP modules ──────────────────────────────────────
+          { path: 'orcamentos',         element: <OrcamentosPage /> },
+          { path: 'garantias',          element: <GarantiasPage /> },
+          { path: 'caixa',              element: <CaixaPage /> },
+          { path: 'documentos',         element: <DocumentosPage /> },
+          { path: 'cobrancas',          element: <CobrancasPage /> },
 
           // ── Preserved module routes (direct URL access intact) ────
           { path: 'patio',              element: <PatioPage /> },

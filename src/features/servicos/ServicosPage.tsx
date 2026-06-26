@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Plus, Search, ClipboardList,
-  CheckCircle2, AlertTriangle, ChevronRight, ArrowRight,
+  AlertTriangle, ChevronRight, ArrowRight,
 } from 'lucide-react'
 import { mockServiceOrders } from '../../mocks/service-orders'
 import { cn, formatCurrency } from '../../lib/utils'
@@ -39,31 +39,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'finalizados',  label: 'Finalizados' },
 ]
 
-// ── KPI card ──────────────────────────────────────────────────────────────────
-
-function KpiCard({
-  label, value, accent, icon, onClick,
-}: {
-  label: string; value: number; accent: string; icon: React.ReactNode; onClick?: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'relative text-left flex flex-col gap-2 p-3.5 rounded-lg border bg-[var(--surface)]',
-        'border-[var(--border)] hover:border-[var(--border-strong)] transition-all duration-[160ms]',
-        onClick ? 'cursor-pointer' : 'cursor-default',
-      )}
-    >
-      <span className="absolute top-0 left-0 right-0 h-[2.5px] rounded-t-lg" style={{ backgroundColor: accent }} />
-      <div className="flex items-center justify-between mt-0.5">
-        <span className="text-[11px] font-medium text-[var(--text-muted)]">{label}</span>
-        <span className="p-1.5 rounded" style={{ backgroundColor: accent + '18', color: accent }}>{icon}</span>
-      </div>
-      <span className="text-[22px] font-extrabold text-[var(--text-primary)] leading-none">{value}</span>
-    </button>
-  )
-}
 
 // ── OS row ────────────────────────────────────────────────────────────────────
 
@@ -160,98 +135,81 @@ export function ServicosPage() {
   }, [tab, search])
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-5">
+    <div className="flex flex-col h-[calc(100vh-44px)] overflow-hidden bg-[var(--background)]">
 
-        {/* ── Header ────────────────────────────────────────────── */}
-        <div className="flex items-start justify-between gap-4">
+      {/* Fixed header */}
+      <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-[var(--border)] bg-[var(--surface)]">
+
+        {/* Title + CTA */}
+        <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <h1 className="text-[20px] font-extrabold text-[var(--text-primary)] tracking-tight">Serviços</h1>
-            <p className="text-[13px] text-[var(--text-muted)] mt-0.5">
+            <h1 className="text-[18px] font-black text-[var(--text-primary)] tracking-tight">Serviços</h1>
+            <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
               Acompanhe ordens de serviço, diagnósticos, orçamentos e finalizações.
             </p>
           </div>
           <Link
             to="/ordens-servico"
-            className="flex-shrink-0 flex items-center gap-1.5 h-8 px-3 rounded text-[12px] font-semibold text-white transition-colors"
-            style={{ backgroundColor: 'var(--brand)' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--brand-dark)')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--brand)')}
+            className="flex items-center gap-1.5 h-8 px-4 rounded-lg text-white text-[11px] font-bold transition-all hover:shadow-md hover:-translate-y-px flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)', boxShadow: '0 2px 8px rgba(249,115,22,0.25)' }}
           >
-            <Plus size={13} strokeWidth={2.5} />
+            <Plus size={12} strokeWidth={2.5} />
             Novo serviço
           </Link>
         </div>
 
-        {/* ── KPI row ───────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <KpiCard
-            label="Serviços abertos"
-            value={stats.abertos}
-            icon={<ClipboardList size={13} />}
-            accent="var(--brand)"
-            onClick={() => setTab('ordens')}
-          />
-          <KpiCard
-            label="Em diagnóstico"
-            value={stats.diagnosticos}
-            icon={<Search size={13} />}
-            accent="#7C3AED"
-            onClick={() => setTab('diagnosticos')}
-          />
-          <KpiCard
-            label="Aguard. aprovação"
-            value={stats.aprovacao}
-            icon={<AlertTriangle size={13} />}
-            accent="var(--warning)"
-            onClick={() => setTab('orcamentos')}
-          />
-          <KpiCard
-            label="Finalizados no mês"
-            value={stats.finalizados}
-            icon={<CheckCircle2 size={13} />}
-            accent="var(--success)"
-            onClick={() => setTab('finalizados')}
-          />
+        {/* KPI chips */}
+        <div className="flex items-center gap-3 mb-3">
+          {[
+            { label: 'Abertos',     value: stats.abertos,      color: 'var(--brand)',   key: 'ordens'       as Tab },
+            { label: 'Diagnóstico', value: stats.diagnosticos,  color: '#7C3AED',        key: 'diagnosticos' as Tab },
+            { label: 'Aprovação',   value: stats.aprovacao,     color: 'var(--warning)', key: 'orcamentos'   as Tab },
+            { label: 'Finalizados', value: stats.finalizados,   color: 'var(--success)', key: 'finalizados'  as Tab },
+          ].map((k, i) => (
+            <button key={k.key} onClick={() => setTab(k.key)} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              {i > 0 && <span className="w-px h-3.5 bg-[var(--border)] flex-shrink-0" />}
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: k.color }} />
+                <span className="font-bold tabular-nums" style={{ color: k.color }}>{k.value}</span>
+                <span className="text-[var(--text-muted)]">{k.label}</span>
+              </div>
+            </button>
+          ))}
         </div>
 
-        {/* ── Callout urgente ───────────────────────────────────── */}
+        {/* Alerts */}
         {(stats.aprovacao > 0 || stats.diagnosticos > 0) && (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             {stats.aprovacao > 0 && (
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border"
-                style={{ backgroundColor: 'var(--warning-subtle)', borderColor: 'var(--warning-border)' }}>
-                <div className="flex items-center gap-2">
-                  <AlertTriangle size={13} style={{ color: 'var(--warning)' }} />
-                  <span className="text-[12px] font-semibold text-[var(--text-primary)]">
-                    {stats.aprovacao} {stats.aprovacao === 1 ? 'orçamento aguarda' : 'orçamentos aguardam'} aprovação do cliente
-                  </span>
-                </div>
-                <button onClick={() => setTab('orcamentos')}
-                  className="text-[11px] font-semibold px-2.5 py-1.5 rounded flex items-center gap-1 hover:opacity-80 transition-opacity"
-                  style={{ color: 'var(--warning)', backgroundColor: 'rgba(0,0,0,0.06)' }}>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border text-[12px]"
+                style={{ background: 'var(--warning-subtle)', borderColor: 'var(--warning-border)' }}>
+                <AlertTriangle size={12} style={{ color: 'var(--warning)' }} className="flex-shrink-0" />
+                <span className="font-semibold flex-1" style={{ color: 'var(--warning)' }}>
+                  {stats.aprovacao} {stats.aprovacao === 1 ? 'orçamento aguarda' : 'orçamentos aguardam'} aprovação
+                </span>
+                <button onClick={() => setTab('orcamentos')} className="text-[11px] font-bold hover:opacity-80 flex items-center gap-1" style={{ color: 'var(--warning)' }}>
                   Revisar <ArrowRight size={10} />
                 </button>
               </div>
             )}
             {stats.diagnosticos > 0 && (
-              <div className="flex items-center justify-between px-4 py-3 rounded-lg border"
-                style={{ backgroundColor: 'rgba(124,58,237,0.06)', borderColor: 'rgba(124,58,237,0.20)' }}>
-                <div className="flex items-center gap-2">
-                  <Search size={13} style={{ color: '#7C3AED' }} />
-                  <span className="text-[12px] font-semibold text-[var(--text-primary)]">
-                    {stats.diagnosticos} {stats.diagnosticos === 1 ? 'diagnóstico pendente' : 'diagnósticos pendentes'} — orçamento ainda não enviado
-                  </span>
-                </div>
-                <button onClick={() => setTab('diagnosticos')}
-                  className="text-[11px] font-semibold px-2.5 py-1.5 rounded flex items-center gap-1 hover:opacity-80 transition-opacity"
-                  style={{ color: '#7C3AED', backgroundColor: 'rgba(0,0,0,0.06)' }}>
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg border text-[12px]"
+                style={{ background: 'rgba(124,58,237,0.06)', borderColor: 'rgba(124,58,237,0.20)' }}>
+                <Search size={12} style={{ color: '#7C3AED' }} className="flex-shrink-0" />
+                <span className="font-semibold flex-1" style={{ color: '#7C3AED' }}>
+                  {stats.diagnosticos} {stats.diagnosticos === 1 ? 'diagnóstico pendente' : 'diagnósticos pendentes'}
+                </span>
+                <button onClick={() => setTab('diagnosticos')} className="text-[11px] font-bold hover:opacity-80 flex items-center gap-1" style={{ color: '#7C3AED' }}>
                   Ver <ArrowRight size={10} />
                 </button>
               </div>
             )}
           </div>
         )}
+      </div>
+
+      {/* Scrollable content */}
+      <div className="flex-1 min-h-0 overflow-auto px-6 py-4">
 
         {/* ── Tabs + table ──────────────────────────────────────── */}
         <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden">

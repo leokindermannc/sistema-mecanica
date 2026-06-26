@@ -37,7 +37,6 @@ export function VehiclePlate({
   plate = '',
   size = 'sm',
   className,
-  showFlag = false,
   interactive = false,
 }: VehiclePlateProps) {
   const format    = detectFormat(plate)

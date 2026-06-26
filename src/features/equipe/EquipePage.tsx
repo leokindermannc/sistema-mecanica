@@ -553,35 +553,48 @@ export function EquipePage() {
   )
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <div className="max-w-[1400px] mx-auto px-6 py-6 space-y-5">
+    <div className="flex flex-col h-[calc(100vh-44px)] overflow-hidden bg-[var(--background)]">
 
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
+      {/* Fixed header */}
+      <div className="flex-shrink-0 px-6 pt-5 pb-4 border-b border-[var(--border)] bg-[var(--surface)]">
+
+        {/* Title + CTA */}
+        <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <h1 className="text-[20px] font-extrabold text-[var(--text-primary)] tracking-tight">Equipe</h1>
-            <p className="text-[13px] text-[var(--text-muted)] mt-0.5">Gerencie usuários, cargos e permissões de acesso.</p>
+            <h1 className="text-[18px] font-black text-[var(--text-primary)] tracking-tight">Equipe</h1>
+            <p className="text-[11px] text-[var(--text-muted)] mt-0.5">Gerencie usuários, cargos e permissões de acesso.</p>
           </div>
           <button
             onClick={() => setAddOpen(true)}
-            className="flex-shrink-0 flex items-center gap-1.5 h-8 px-3 rounded text-[12px] font-semibold text-white transition-colors"
-            style={{ backgroundColor: 'var(--brand)' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'var(--brand-dark)')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'var(--brand)')}
+            className="flex items-center gap-1.5 h-8 px-4 rounded-lg text-white text-[11px] font-bold transition-all hover:shadow-md hover:-translate-y-px flex-shrink-0"
+            style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)', boxShadow: '0 2px 8px rgba(249,115,22,0.25)' }}
           >
-            <Plus size={13} strokeWidth={2.5} />
+            <Plus size={12} strokeWidth={2.5} />
             Novo usuário
           </button>
         </div>
 
-        {/* Summary */}
-        <div className="flex items-center gap-4 text-[13px] text-[var(--text-secondary)]">
-          <span><strong className="text-[var(--text-primary)] font-bold">{stats.total}</strong> usuários</span>
-          <span className="text-[var(--border)]">·</span>
-          <span><strong className="text-[var(--text-primary)] font-bold">{stats.ativos}</strong> ativos</span>
-          <span className="text-[var(--border)]">·</span>
-          <span><strong className="text-[var(--text-primary)] font-bold">{stats.cargos}</strong> cargos distintos</span>
+        {/* Summary chips */}
+        <div className="flex items-center gap-3">
+          {[
+            { label: 'Usuários', value: stats.total,  color: '#6B7280' },
+            { label: 'Ativos',   value: stats.ativos, color: '#16A34A' },
+            { label: 'Cargos',   value: stats.cargos, color: '#7C3AED' },
+          ].map((k, i) => (
+            <div key={k.label} className="flex items-center gap-3">
+              {i > 0 && <span className="w-px h-3.5 bg-[var(--border)] flex-shrink-0" />}
+              <div className="flex items-center gap-1.5 text-[11px]">
+                <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: k.color }} />
+                <span className="font-bold tabular-nums" style={{ color: k.color }}>{k.value}</span>
+                <span className="text-[var(--text-muted)]">{k.label}</span>
+              </div>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* Scrollable content */}
+      <div className="flex-1 min-h-0 overflow-auto px-6 py-4">
 
         {/* Tab panel */}
         <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden">

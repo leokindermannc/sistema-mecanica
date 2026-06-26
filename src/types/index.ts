@@ -394,6 +394,127 @@ export interface SystemUser {
   joinDate: string
 }
 
+// ─── Budgets (Orçamentos) ─────────────────────────────────────────────────────
+
+export type BudgetStatus =
+  | 'RASCUNHO'
+  | 'ENVIADO'
+  | 'VISUALIZADO'
+  | 'AGUARDANDO_APROVACAO'
+  | 'APROVADO_PARCIAL'
+  | 'APROVADO'
+  | 'RECUSADO'
+  | 'EXPIRADO'
+  | 'CONVERTIDO'
+  | 'CANCELADO'
+
+export interface BudgetItem {
+  id: string
+  type: 'SERVICO' | 'PECA' | 'OUTRO'
+  description: string
+  quantity: number
+  unitPrice: number
+  total: number
+  approved: boolean
+}
+
+export interface Budget {
+  id: string
+  number: string
+  status: BudgetStatus
+  version: number
+  customerId: string
+  customerName: string
+  vehicleId: string
+  vehicle: string
+  plate: string
+  diagnosis: string
+  items: BudgetItem[]
+  subtotal: number
+  discountPercent: number
+  discountValue: number
+  total: number
+  validUntil: string
+  estimatedDays: number
+  paymentTerms: string
+  warranty: string
+  technicalNotes?: string
+  responsibleId: string
+  responsibleName: string
+  sentAt?: string
+  viewedAt?: string
+  approvedAt?: string
+  rejectedAt?: string
+  rejectionReason?: string
+  convertedToOsId?: string
+  convertedToOsNumber?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// ─── Warranties (Garantias) ───────────────────────────────────────────────────
+
+export type WarrantyStatus = 'ATIVA' | 'EXPIRADA' | 'UTILIZADA' | 'CANCELADA'
+
+export interface Warranty {
+  id: string
+  serviceOrderId: string
+  serviceOrderNumber: string
+  customerId: string
+  customerName: string
+  vehicleId: string
+  vehicle: string
+  plate: string
+  description: string
+  coveredServices: string[]
+  coveredParts: string[]
+  startDate: string
+  endDate: string
+  kmLimit?: number
+  kmAtService: number
+  status: WarrantyStatus
+  notes?: string
+  usedOsId?: string
+  usedOsNumber?: string
+  createdAt: string
+}
+
+// ─── Cash Register (Caixa) ────────────────────────────────────────────────────
+
+export type CaixaMovementType =
+  | 'ABERTURA'
+  | 'RECEBIMENTO'
+  | 'PAGAMENTO'
+  | 'SANGRIA'
+  | 'SUPRIMENTO'
+  | 'FECHAMENTO'
+
+export interface CaixaMovement {
+  id: string
+  type: CaixaMovementType
+  description: string
+  value: number
+  paymentMethod?: string
+  userId: string
+  userName: string
+  relatedId?: string
+  createdAt: string
+}
+
+export interface CaixaSession {
+  id: string
+  openedAt: string
+  closedAt?: string
+  openedBy: string
+  closedBy?: string
+  openingBalance: number
+  expectedBalance: number
+  countedBalance?: number
+  difference?: number
+  movements: CaixaMovement[]
+  status: 'ABERTO' | 'FECHADO'
+}
+
 export type FiscalStatus = 'NAO_EMITIDO' | 'PENDENTE' | 'AUTORIZADO' | 'REJEITADO'
 
 export interface Invoice {

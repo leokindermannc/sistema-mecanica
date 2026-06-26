@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   ChevronLeft, ChevronRight, Plus, Pencil, MessageCircle,
   Phone, Mail, MapPin, Car, FileText, Wallet,
-  AlertTriangle, CheckCircle2, Clock, Building2, User,
+  AlertTriangle, CheckCircle2, Clock, User,
   MessageSquare, PenLine, X, ArrowRight, Gauge,
 } from 'lucide-react'
 import { mockCustomers }     from '../../mocks/customers'
@@ -526,7 +526,6 @@ function ServicosTab({ orders }: { orders: ReturnType<typeof mockServiceOrders.f
 
 function FinanceiroTab({ finances }: { finances: ReturnType<typeof mockFinance.filter> }) {
   const receber = finances.filter(f => f.type === 'RECEBER')
-  const pagar   = finances.filter(f => f.type === 'PAGAR')
   const total   = receber.reduce((s, f) => s + (f.status === 'PAGA' ? f.paidValue ?? f.value : 0), 0)
   const aberto  = receber.filter(f => f.status === 'ABERTA').reduce((s, f) => s + f.value, 0)
   const vencido = receber.filter(f => f.status === 'VENCIDA').reduce((s, f) => s + f.value, 0)
